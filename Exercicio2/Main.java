@@ -14,7 +14,7 @@ public class Main {
 
         Thread computador = new Thread(() -> {
             perfil.atualizarPerfil(
-                    "Estudante e profissional de tecnologia",
+                    "Estudante de tecnologia",
                     "Ocupada",
                     "Computador"
             );
