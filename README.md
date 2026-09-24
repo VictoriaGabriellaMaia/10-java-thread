@@ -131,3 +131,51 @@ Para resolver esse problema de desempenho, você deve implementar o padrão de `
 - Console: oo rodar o programa, as mensagens de registro de passageiros e de bagagens devem se misturar de forma limpa. Você deve perceber que, enquanto uma *thread* está executando o bloco seguro de passageiros, a outra *thread* não fica bloqueada para registrar a bagagem, pois os cadeados digitais são completamente diferentes.
   
 Objetivo: aprender a trabalhar com concorrência fina (*fine-grained locking*), provando que *threads* acessando recursos diferentes no mesmo objeto não precisam esperar uma pela outra na fila se usarem trancas separadas.
+
+# Soluções dos Exercícios
+
+### Exercício 1 — Bilheteria
+
+Foi criada uma classe `Bilheteria` com controle de acesso sincronizado ao número de ingressos disponíveis.
+
+O método `comprarIngresso()` utiliza `synchronized` para garantir que apenas uma thread por vez possa alterar a quantidade de ingressos. Foram criadas 12 threads representando clientes, enquanto a bilheteria possui apenas 10 ingressos.
+
+Assim, somente 10 clientes conseguem comprar ingressos e os demais recebem a mensagem de ingressos esgotados.
+
+### Exercício 2 — Perfil de Usuário
+
+Foi criada a classe `PerfilUsuario`, contendo os atributos `biografia` e `status`.
+
+A validação e a espera de 200 milissegundos acontecem fora da região sincronizada. Apenas a alteração dos dados do perfil é protegida pelo bloco `synchronized(this)`.
+
+Dessa forma, somente a parte crítica da operação fica protegida pelo bloqueio.
+
+### Exercício 3 — Caixa Registradora
+
+Foi criada a classe `CaixaRegistradora`, responsável por controlar o saldo do caixa.
+
+Foi utilizado um objeto privado chamado `travaSaldo` como trava. Tanto o registro de vendas quanto a realização de sangrias utilizam essa mesma trava para impedir que duas operações alterem o saldo simultaneamente.
+
+Três threads representam diferentes operadores utilizando o mesmo caixa.
+
+### Exercício 4 — Gerenciador de Downloads
+
+Foi criada a classe `GerenciadorDownloads`, contendo dois contadores: downloads concluídos e downloads falhados.
+
+Foram utilizadas duas travas diferentes:
+
+- `travaSucesso` para controlar os downloads concluídos;
+- `travaFalha` para controlar os downloads falhados.
+
+Dessa forma, as operações relacionadas a sucessos e falhas utilizam regiões críticas independentes.
+
+### Exercício 5 — Painel do Aeroporto
+
+Foi criada a classe `PainelAeroporto`, contendo dois recursos independentes: quantidade de passageiros e quantidade de bagagens.
+
+Foram utilizadas duas travas diferentes:
+
+- `travaPassageiros` para controlar os check-ins;
+- `travaBagagens` para controlar os registros de bagagem.
+
+Assim, uma thread pode registrar um check-in enquanto outra registra uma bagagem, pois cada operação utiliza uma trava diferente.
